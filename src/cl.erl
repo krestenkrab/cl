@@ -196,9 +196,19 @@
 -endif.
 
 init() ->
-    Nif = filename:join([code:priv_dir(cl), "cl_nif"]),
-    ?DBG("Loading: ~s\n", [Nif]),
-    erlang:load_nif(Nif, 0).
+    case code:priv_dir(cl) of
+        {error, bad_name} ->
+            case code:which(?MODULE) of
+                Filename when is_list(Filename) ->
+                    SoName = filename:join([filename:dirname(Filename),"../priv", "cl_nif"]);
+                _ ->
+                    SoName = filename:join("../priv", "cl_nif")
+            end;
+         Dir ->
+			SoName = filename:join(Dir, "cl_nif")
+    end,
+    ?DBG("Loading: ~s\n", [SoName]),
+    erlang:load_nif(SoName, 0).
 
 %%
 %% @type start_arg() = { {'debug',boolean()} }
