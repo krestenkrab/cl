@@ -339,7 +339,16 @@ chunk(List, Size, Acc, N) ->
     {Head, Tail} = lists:split(Size, List),
     chunk(Tail, Size, [Head|Acc], N+1).
 
-
+%%
+%% example of a NN with 2 inputs and 1 output.
+%%
+%% We translate 0 -> 0.1, and 1 -> 0.9 and teach it the following rules:
+%%
+%%   [0.9, 0.1] -> [0.9]
+%%   [0.9, 0.9] -> [0.1]
+%%   [0.1, 0.1] -> [0.1]
+%%   [0.1, 0.9] -> [0.9]
+%%
 learn_xor() ->
     {ok, NN} = nnagent:start([2,128,1]),
     ok = nnagent:randomize(NN),
